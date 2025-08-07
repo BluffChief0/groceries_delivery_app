@@ -3,13 +3,16 @@ from datetime import datetime
 from typing import List, Optional
 from app.models import OrderStatus
 
+
 class Category(BaseModel):
     id: str
     name: str
     image_url: str
 
+
     class Config:
         orm_mode = True
+
 
 class Product(BaseModel):
     id: str
@@ -27,13 +30,16 @@ class Product(BaseModel):
     weight: Optional[float]
     country: Optional[str]
 
+
     class Config:
         orm_mode = True
+
 
 class OrderItemCreate(BaseModel):
     product_id: str
     quantity: int
     price: float
+
 
 class OrderCreate(BaseModel):
     user_phone: str
@@ -41,6 +47,7 @@ class OrderCreate(BaseModel):
     delivery_time: datetime
     total_price: float
     items: List[OrderItemCreate]
+
 
 class Order(BaseModel):
     id: str
@@ -51,6 +58,7 @@ class Order(BaseModel):
     status: OrderStatus
     created_at: datetime
     updated_at: Optional[datetime]
+
 
     class Config:
         orm_mode = True

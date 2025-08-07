@@ -4,7 +4,8 @@ from sqlalchemy import Column, String, Integer, Float, Text, DECIMAL, ForeignKey
 from sqlalchemy.types import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from .db import Base
+from backend.app.db import Base
+
 
 class OrderStatus(str, enum.Enum):
     created = 'created'
@@ -12,12 +13,14 @@ class OrderStatus(str, enum.Enum):
     delivered = 'delivered'
     canceled = 'canceled'
 
+
 class Category(Base):
     __tablename__ = 'categories'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = Column(String(128), nullable=False)
     image_url = Column(String(2048), nullable=False)
     products = relationship('Product', back_populates='category')
+
 
 class Product(Base):
     __tablename__ = 'products'
@@ -38,6 +41,7 @@ class Product(Base):
     category = relationship('Category', back_populates='products')
     order_items = relationship('OrderItem', back_populates='product')
 
+
 class User(Base):
     __tablename__ = 'users'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -46,6 +50,7 @@ class User(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
     orders = relationship('Order', back_populates='user')
+
 
 class Order(Base):
     __tablename__ = 'orders'
@@ -60,6 +65,7 @@ class Order(Base):
     updated_at = Column(DateTime, onupdate=func.now())
     user = relationship('User', back_populates='orders')
     items = relationship('OrderItem', back_populates='order')
+
 
 class OrderItem(Base):
     __tablename__ = 'order_items'
