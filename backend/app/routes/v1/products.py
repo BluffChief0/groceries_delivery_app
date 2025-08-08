@@ -18,4 +18,3 @@ def search_products_endpoint(q: str, db: Session = Depends(get_db)):
 @route.get('/{product_id}', response_model=Product)
 def get_product_endpoint(product_id: str, db: Session = Depends(get_db)):
     return ProductsCRUD.get_product(db, product_id)
-
