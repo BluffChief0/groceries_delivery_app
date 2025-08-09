@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from backend.app.routes.v1 import categories, products, orders, auth
 from backend.app.db import engine, Base
 import logging
@@ -29,6 +30,12 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+app.mount(
+    "/categories/images",
+    StaticFiles(directory="backend/app/public/categories/img"),
+    name="category_images"
 )
 
 app.include_router(categories.route, prefix='/categories', tags=["categories"])
