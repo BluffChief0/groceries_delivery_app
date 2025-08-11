@@ -1,6 +1,5 @@
 import 'package:cubit_form/cubit_form.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:grocery_delivery/logic/bloc/cart_cubit.dart';
 import 'package:grocery_delivery/logic/models/product.dart';
 import 'package:grocery_delivery/ui/components/brand_network_image.dart';
@@ -43,7 +42,9 @@ class ProductCard extends StatelessWidget {
                   if (state.containsKey(product))
                     Text(
                       state[product].toString(),
-                      style: BrandTypography.titleBigBold.copyWith(color: BrandColors.black70,),
+                      style: BrandTypography.titleBigBold.copyWith(
+                        color: BrandColors.black70,
+                      ),
                     ),
                 ],
               ),
@@ -65,7 +66,7 @@ class ProductCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  product.amountDescription,
+                  product.description,
                   style: BrandTypography.footnoteBold.copyWith(
                     color: BrandColors.white,
                   ),
@@ -94,8 +95,7 @@ class ProductCard extends StatelessWidget {
                   children: [
                     BrandIconButton(
                       onTap: () {
-                        BlocProvider.of<CartCubit>(context)
-                            .removeFromCart(product);
+                        BlocProvider.of<CartCubit>(context).removeFromCart(product);
                       },
                       iconData: CupertinoIcons.minus,
                       color: BrandColors.errorLight,
