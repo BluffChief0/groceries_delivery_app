@@ -1,8 +1,15 @@
 import uuid
+import asyncio
+from fastapi_users.password import PasswordHelper
+from sqlalchemy import select, func
 from datetime import datetime, timedelta
-from sqlalchemy.orm import Session
-from app.db import SessionLocal, Base, engine
-from app import models
+from backend.app.core.models.db import AsyncSessionLocal, Base, engine
+from backend.app.core.models import models
+
+ph = PasswordHelper()
+
+def hp(password: str) -> str:
+    return ph.hash(password)
 
 # Категории
 categories = [
@@ -84,11 +91,11 @@ products = [
 
 # Пользователи
 users = [
-    models.User(id=str(uuid.uuid4()), phone_number="+79991234567", name="Иван Иванов"),
-    models.User(id=str(uuid.uuid4()), phone_number="+79991234568", name="Мария Петрова"),
-    models.User(id=str(uuid.uuid4()), phone_number="+79991234569", name="Алексей Смирнов"),
-    models.User(id=str(uuid.uuid4()), phone_number="+79991234570", name="Елена Кузнецова"),
-    models.User(id=str(uuid.uuid4()), phone_number="+79991234571", name="Дмитрий Соколов")
+    models.User(id=str(uuid.uuid4()), phone_number="+79991234567", name="Иван Иванов", role="user", is_active=True, is_verified=True, is_superuser=False, email="example1@pochta.ru", hashed_password=hp("Passw0rd!")),
+    models.User(id=str(uuid.uuid4()), phone_number="+79991234568", name="Мария Петрова", role="user", is_active=True, is_verified=True, is_superuser=False, email="example2@pochta.ru", hashed_password=hp("Passw0rd!")),
+    models.User(id=str(uuid.uuid4()), phone_number="+79991234569", name="Алексей Смирнов", role="user", is_active=True, is_verified=True, is_superuser=False, email="example3@pochta.ru", hashed_password=hp("Passw0rd!")),
+    models.User(id=str(uuid.uuid4()), phone_number="+79991234570", name="Елена Кузнецова", role="user", is_active=True, is_verified=True, is_superuser=False, email="example4@pochta.ru", hashed_password=hp("Passw0rd!")),
+    models.User(id=str(uuid.uuid4()), phone_number="+79991234571", name="Дмитрий Соколов", role="user", is_active=True, is_verified=True, is_superuser=False, email="example5@pochta.ru", hashed_password=hp("Passw0rd!"))
 ]
 
 # Заказы
@@ -129,43 +136,53 @@ order_items = [
     models.OrderItem(id=str(uuid.uuid4()), order_id=orders[9].id, product_id=products[45].id, quantity=1, price=150.00)
 ]
 
-def seed_data():
-    Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
-    try:
-        print("Starting to seed data...")
-        print("Adding categories...")
-        for cat in categories:
-            db.add(cat)
-        db.commit()
-        print("Categories added successfully")
-        print("Adding products...")
-        for prod in products:
-            db.add(prod)
-        db.commit()
-        print("Products added successfully")
-        print("Adding users...")
-        for user in users:
-            db.add(user)
-        db.commit()
-        print("Users added successfully")
-        print("Adding orders...")
-        for order in orders:
-            db.add(order)
-        db.commit()
-        print("Orders added successfully")
-        print("Adding order items...")
-        for item in order_items:
-            db.add(item)
-        db.commit()
-        print("Order items added successfully")
-        print("Data seeding completed successfully")
-    except Exception as e:
-        print(f"Error during data seeding: {e}")
-        db.rollback()
-    finally:
-        db.close()
+async def seed_data():
+    # создаём таблицы (для AsyncEngine — только через run_sync)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    # открываем async-сессию корректно
+    async with AsyncSessionLocal() as db:
+        try:
+            print("Starting to seed data...")
+
+            # категории
+            if categories:
+                db.add_all(categories)
+                await db.commit()
+                print("Categories added successfully")
+
+            # продукты
+            if products:
+                db.add_all(products)
+                await db.commit()
+                print("Products added successfully")
+
+            # пользователи
+            if users:
+                db.add_all(users)
+                await db.commit()
+                print("Users added successfully")
+
+            # заказы
+            if orders:
+                db.add_all(orders)
+                await db.commit()
+                print("Orders added successfully")
+
+            # позиции заказов
+            if order_items:
+                db.add_all(order_items)
+                await db.commit()
+                print("Order items added successfully")
+
+            print("Data seeding completed successfully")
+
+        except Exception as e:
+            print(f"Error during data seeding: {e}")
+            await db.rollback()   # <-- тоже await
+            raise                 # полезно пробросить ошибку, чтобы видеть трейс
 
 if __name__ == "__main__":
-    seed_data()
+    asyncio.run(seed_data())
 

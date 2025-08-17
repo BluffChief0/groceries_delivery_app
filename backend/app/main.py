@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from backend.app.core.models import models
 from backend.app.api.v1 import categories, products, orders
 from backend.app.api.v1.auth import (auth_router, register_router, users_router, 
                                      current_active_user, current_active_superuser)
-from backend.app.core.models.db import create_async_engine, engine, Base
-import logging
+from backend.app.core.models.db import AsyncSessionLocal, create_async_engine, engine, Base
+from sqlalchemy import select, func
 
+import logging
 from backend.app.core.settings import settings
 
 logging.basicConfig(level=logging.DEBUG)
@@ -19,6 +21,20 @@ app = FastAPI(title=settings.API_NAME,
 async def on_startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    print(f"[DB URL] {settings.DATABASE_URL}")
+    async with AsyncSessionLocal() as s:
+        for table, name in [
+            (models.Category, "categories"),
+            (models.Product, "products"),
+            (models.Order, "orders"),
+            (models.User, "users"),
+        ]:
+            try:
+                cnt = await s.execute(select(func.count()).select_from(table))
+                print(f"[DB CHECK] {name}: {cnt.scalar()}")
+            except Exception as e:
+                print(f"[DB CHECK ERROR] {name}: {e}")
 
 origins = [
     "http://localhost",

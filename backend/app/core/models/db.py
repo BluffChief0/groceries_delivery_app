@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import (AsyncSession,
 from backend.app.core.settings import settings
 
 engine = create_async_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False}, 
-                             echo=True)
+                             echo=True, use_insertmanyvalues=False)
 
 
 @event.listens_for(engine.sync_engine, "connect")
