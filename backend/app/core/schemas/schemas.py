@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional
-from backend.app.models import OrderStatus
+from backend.app.core.models.models import OrderStatus
 
 
 class Category(BaseModel):

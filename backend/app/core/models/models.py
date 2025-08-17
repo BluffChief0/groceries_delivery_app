@@ -2,9 +2,11 @@ import uuid
 import enum
 from sqlalchemy import Column, String, Integer, Float, Text, DECIMAL, ForeignKey, Enum, DateTime
 from sqlalchemy.types import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
-from backend.app.db import Base
+from backend.app.core.models.db import Base
+
+from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 
 
 class OrderStatus(str, enum.Enum):
@@ -42,28 +44,34 @@ class Product(Base):
     order_items = relationship('OrderItem', back_populates='product')
 
 
-class User(Base):
+class User(SQLAlchemyBaseUserTableUUID, Base):
     __tablename__ = 'users'
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    phone_number = Column(String(32), unique=True, nullable=False)
-    name = Column(String(128), nullable=True)
-    created_at = Column(DateTime, server_default=func.now())
-    updated_at = Column(DateTime, onupdate=func.now())
-    orders = relationship('Order', back_populates='user')
+    phone_number: Mapped[str | None] = mapped_column(String(32), unique=True, nullable=True)
+    name: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    role: Mapped[str] = mapped_column(String(32), default="user")
+    created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[DateTime | None] = mapped_column(DateTime, onupdate=func.now())
+
+    # если у тебя есть таблица Order с FK на users.id:
+    orders: Mapped[list["Order"]] = relationship(back_populates="user")
+
+
+class OAuthAccount(SQLAlchemyBaseUserTableUUID, Base):
+    __tablename__ = "oauth_accounts"
 
 
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_phone = Column(String(32), nullable=True)
-    user_id = Column(String(36), ForeignKey('users.id'), nullable=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
     delivery_address = Column(Text, nullable=False)
     delivery_time = Column(DateTime, nullable=True)
     total_price = Column(DECIMAL(10,2), nullable=False)
     status = Column(Enum(OrderStatus), default=OrderStatus.created)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
-    user = relationship('User', back_populates='orders')
+    user: Mapped["User"] = relationship(back_populates="orders")
     items = relationship('OrderItem', back_populates='order')
 
 

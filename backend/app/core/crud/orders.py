@@ -1,12 +1,12 @@
-from sqlalchemy.orm import Session
-from backend.app import models
-from backend.app import schemas
+from sqlalchemy.ext.asyncio import AsyncSession
+from backend.app.core.models import models
+from backend.app.core.schemas import schemas
 import uuid
 
 class OrdersCRUD:
 
     @staticmethod
-    def create_order(db: Session, order: schemas.OrderCreate) -> models.Order:
+    async def create_order(db: AsyncSession, order: schemas.OrderCreate) -> models.Order:
         db_order = models.Order(
             id=str(uuid.uuid4()),
             user_phone=order.user_phone,
@@ -28,4 +28,4 @@ class OrdersCRUD:
             )
             db.add(db_item)
         db.commit()
-        return db_order
+        return await db_order
