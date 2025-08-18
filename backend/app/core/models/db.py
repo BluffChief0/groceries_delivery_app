@@ -20,7 +20,9 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 
 AsyncSessionLocal = async_sessionmaker(bind=engine, 
-                                       autocommit=False, autoflush=False)
+                                       autoflush=True, 
+                                       expire_on_commit=False, 
+                                       class_=AsyncSession)
 Base = declarative_base()
 
 

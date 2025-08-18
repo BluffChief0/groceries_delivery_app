@@ -114,74 +114,68 @@ orders = [
 
 # Элементы заказа
 order_items = [
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[0].id, product_id=products[0].id, quantity=2, price=129.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[0].id, product_id=products[10].id, quantity=1, price=89.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[1].id, product_id=products[5].id, quantity=2, price=150.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[1].id, product_id=products[15].id, quantity=1, price=350.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[2].id, product_id=products[20].id, quantity=1, price=800.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[2].id, product_id=products[25].id, quantity=2, price=50.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[3].id, product_id=products[1].id, quantity=1, price=149.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[3].id, product_id=products[11].id, quantity=1, price=250.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[4].id, product_id=products[30].id, quantity=2, price=90.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[4].id, product_id=products[35].id, quantity=1, price=200.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[5].id, product_id=products[2].id, quantity=3, price=59.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[5].id, product_id=products[12].id, quantity=1, price=90.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[6].id, product_id=products[6].id, quantity=2, price=99.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[6].id, product_id=products[16].id, quantity=1, price=600.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[7].id, product_id=products[21].id, quantity=1, price=1200.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[7].id, product_id=products[26].id, quantity=2, price=70.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[8].id, product_id=products[3].id, quantity=2, price=69.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[8].id, product_id=products[13].id, quantity=1, price=110.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[9].id, product_id=products[40].id, quantity=2, price=100.00),
-    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[9].id, product_id=products[45].id, quantity=1, price=150.00)
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[0].id, product_id=products[0].id, amount=2, price=129.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[0].id, product_id=products[10].id, amount=1, price=89.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[1].id, product_id=products[5].id, amount=2, price=150.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[1].id, product_id=products[15].id, amount=1, price=350.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[2].id, product_id=products[20].id, amount=1, price=800.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[2].id, product_id=products[25].id, amount=2, price=50.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[3].id, product_id=products[1].id, amount=1, price=149.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[3].id, product_id=products[11].id, amount=1, price=250.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[4].id, product_id=products[30].id, amount=2, price=90.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[4].id, product_id=products[35].id, amount=1, price=200.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[5].id, product_id=products[2].id, amount=3, price=59.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[5].id, product_id=products[12].id, amount=1, price=90.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[6].id, product_id=products[6].id, amount=2, price=99.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[6].id, product_id=products[16].id, amount=1, price=600.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[7].id, product_id=products[21].id, amount=1, price=1200.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[7].id, product_id=products[26].id, amount=2, price=70.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[8].id, product_id=products[3].id, amount=2, price=69.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[8].id, product_id=products[13].id, amount=1, price=110.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[9].id, product_id=products[40].id, amount=2, price=100.00),
+    models.OrderItem(id=str(uuid.uuid4()), order_id=orders[9].id, product_id=products[45].id, amount=1, price=150.00)
 ]
 
 async def seed_data():
-    # создаём таблицы (для AsyncEngine — только через run_sync)
+    # создаём таблицы
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # открываем async-сессию корректно
+    # сеем данные
     async with AsyncSessionLocal() as db:
         try:
             print("Starting to seed data...")
 
-            # категории
+            # добавляем всё в нужном порядке
             if categories:
                 db.add_all(categories)
-                await db.commit()
-                print("Categories added successfully")
+                print("Categories staged")
 
-            # продукты
             if products:
                 db.add_all(products)
-                await db.commit()
-                print("Products added successfully")
+                print("Products staged")
 
-            # пользователи
             if users:
                 db.add_all(users)
-                await db.commit()
-                print("Users added successfully")
+                print("Users staged")
 
-            # заказы
             if orders:
                 db.add_all(orders)
-                await db.commit()
-                print("Orders added successfully")
+                print("Orders staged")
 
-            # позиции заказов
             if order_items:
                 db.add_all(order_items)
-                await db.commit()
-                print("Order items added successfully")
+                print("Order items staged")
 
+            # один общий commit
+            await db.commit()
             print("Data seeding completed successfully")
 
         except Exception as e:
             print(f"Error during data seeding: {e}")
-            await db.rollback()   # <-- тоже await
-            raise                 # полезно пробросить ошибку, чтобы видеть трейс
+            await db.rollback()
+            raise
+
 
 if __name__ == "__main__":
     asyncio.run(seed_data())

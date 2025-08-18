@@ -37,7 +37,7 @@ class Product(BaseModel):
 
 class OrderItemCreate(BaseModel):
     product_id: str
-    quantity: int
+    amount: int
     price: float
 
 
@@ -45,7 +45,6 @@ class OrderCreate(BaseModel):
     user_phone: str
     delivery_address: str
     delivery_time: datetime
-    total_price: float
     items: List[OrderItemCreate]
 
 

@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 
-DB_PATH = "sqlite+aiosqlite:///C:/Users/Admin/Desktop/freelance/groceries_delivery_app/groceries.db"
+DB_PATH = "sqlite+aiosqlite:////root/git/groceries_delivery_app/backend/groceries.db"
 
 class Settings(BaseSettings):
     API_NAME: str = "Groceries Delivery API"

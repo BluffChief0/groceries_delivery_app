@@ -64,7 +64,7 @@ class Order(Base):
     __tablename__ = 'orders'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_phone = Column(String(32), nullable=True)
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=True)
     delivery_address = Column(Text, nullable=False)
     delivery_time = Column(DateTime, nullable=True)
     total_price = Column(DECIMAL(10,2), nullable=False)
@@ -72,7 +72,7 @@ class Order(Base):
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
     user: Mapped["User"] = relationship(back_populates="orders")
-    items = relationship('OrderItem', back_populates='order')
+    items = relationship('OrderItem', back_populates='order', lazy='selectin')
 
 
 class OrderItem(Base):
@@ -80,7 +80,7 @@ class OrderItem(Base):
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     order_id = Column(String(36), ForeignKey('orders.id'))
     product_id = Column(String(36), ForeignKey('products.id'))
-    quantity = Column(Integer, nullable=False)
+    amount = Column(Integer, nullable=False)
     price = Column(DECIMAL(10,2), nullable=False)
     order = relationship('Order', back_populates='items')
     product = relationship('Product', back_populates='order_items')

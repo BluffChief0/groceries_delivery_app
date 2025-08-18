@@ -8,5 +8,5 @@ route = APIRouter()
 
 @route.post('/', response_model=Order)
 async def create_order_endpoint(order: OrderCreate, db: AsyncSession = Depends(get_async_session)):
-    return await OrdersCRUD.create_order(db, order)
-
+    created = await OrdersCRUD.create_order(db, order)
+    return created
