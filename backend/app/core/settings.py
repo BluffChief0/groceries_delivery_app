@@ -1,6 +1,10 @@
 from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+import os
 
-DB_PATH = "sqlite+aiosqlite:////root/git/groceries_delivery_app/backend/groceries.db"
+load_dotenv()
+
+DB_PATH = os.getenv(str("DB_PATH"))
 
 class Settings(BaseSettings):
     API_NAME: str = "Groceries Delivery API"
