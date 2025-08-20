@@ -14,6 +14,12 @@ class Category(BaseModel):
         orm_mode = True
 
 
+class NutrItem(BaseModel):
+    proteins: float
+    fats: float
+    carbohydrates: float
+
+
 class Product(BaseModel):
     id: str
     category_id: str
@@ -25,7 +31,7 @@ class Product(BaseModel):
     stock: int
     rating: Optional[float]
     composition: Optional[str]
-    nutritional_value: Optional[str]
+    nutritional: List[NutrItem]
     calories: Optional[int]
     weight: Optional[float]
     country: Optional[str]

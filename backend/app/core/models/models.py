@@ -1,13 +1,12 @@
 import uuid
 import enum
-from sqlalchemy import Column, String, Integer, Float, Text, DECIMAL, ForeignKey, Enum, DateTime
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy import Column, String, Integer, Float, Text, DECIMAL, ForeignKey, Enum, DateTime, JSON
 from sqlalchemy.types import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
 from backend.app.core.models.db import Base
-
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
-
 
 class OrderStatus(str, enum.Enum):
     created = 'created'
@@ -23,7 +22,6 @@ class Category(Base):
     image_url = Column(String(2048), nullable=False)
     products = relationship('Product', back_populates='category')
 
-
 class Product(Base):
     __tablename__ = 'products'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -36,7 +34,10 @@ class Product(Base):
     stock = Column(Integer, nullable=False, default=0)
     rating = Column(Float, nullable=True)
     composition = Column(Text, nullable=True)
-    nutritional_value = Column(Text, nullable=True)
+    nutritional: Mapped[list[dict]] = mapped_column(MutableList.as_mutable(JSON),
+                                                    nullable=True,
+                                                    default=list)
+    package = Column(Text, nullable=True)
     calories = Column(Integer, nullable=True)
     weight = Column(Float, nullable=True)
     country = Column(String(128), nullable=True)
