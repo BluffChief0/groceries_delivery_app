@@ -6,9 +6,9 @@ from sqlalchemy.ext.asyncio import (AsyncSession,
                                     async_sessionmaker, 
                                     create_async_engine)
 
-from backend.app.core.settings import settings
+from backend.settings import settings
 
-engine = create_async_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False}, 
+engine = create_async_engine(settings.DB_PATH, connect_args={"check_same_thread": False}, 
                              echo=True, use_insertmanyvalues=False)
 
 

@@ -9,7 +9,7 @@ from backend.app.core.models.db import AsyncSessionLocal, create_async_engine, e
 from sqlalchemy import select, func
 
 import logging
-from backend.app.core.settings import settings
+from backend.settings import settings
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -19,10 +19,7 @@ app = FastAPI(title=settings.API_NAME,
 
 @app.on_event("startup")
 async def on_startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-    print(f"[DB URL] {settings.DATABASE_URL}")
+    print(f"[DB URL] {settings.DB_PATH}")
     async with AsyncSessionLocal() as s:
         for table, name in [
             (models.Category, "categories"),
