@@ -12,9 +12,9 @@ from backend.app.api.v1.auth import current_active_user
 from backend.app.core.models.sms import PhoneOTP
 from backend.app.core.schemas.sms import VerifyBody
 
-router = APIRouter(prefix="/auth/phone", tags=["phone-verify"])
+auth_verify_router = APIRouter(prefix="/auth/phone", tags=["phone-verify"])
 
-@router.post("/request")
+@auth_verify_router.post("/request")
 async def request_phone_code(
     background: BackgroundTasks,
     user: User = Depends(current_active_user),
@@ -43,7 +43,7 @@ async def request_phone_code(
     return {"detail": "Код отправлен"}
 
 
-@router.post("/verify")
+@auth_verify_router.post("/verify")
 async def verify_phone_code(
     body: VerifyBody,
     user: User = Depends(current_active_user),
