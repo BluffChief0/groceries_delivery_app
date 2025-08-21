@@ -2,11 +2,12 @@ import uuid
 import enum
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy import Column, String, Integer, Float, Text, DECIMAL, ForeignKey, Enum, DateTime, JSON
-from sqlalchemy.types import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
-from backend.app.core.models.db import Base
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
+
+from backend.app.core.models.db import Base
+
 
 class OrderStatus(str, enum.Enum):
     created = 'created'

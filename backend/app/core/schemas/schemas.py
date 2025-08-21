@@ -35,6 +35,7 @@ class Product(BaseModel):
     calories: Optional[int]
     weight: Optional[float]
     country: Optional[str]
+    package: Optional[str]
 
 
     class Config:

@@ -10,6 +10,7 @@ from alembic import context
 from backend.settings import settings
 from backend.app.core.models.db import Base
 from backend.app.core.models.models import Order
+from backend.app.core.models.sms import PhoneOTP
 
 # from pathlib import Path
 # import sys

@@ -9,15 +9,25 @@ class Settings(BaseSettings):
     API_NAME: str = "Groceries Delivery API"
     VERSION: str = "0.1.0"
     DB_PATH: str
+
     ACCESS_TOKEN_LIFETIME: int
+    USER_SECRET: str
 
-    model_config = SettingsConfigDict(
-        env_file=str(ENV_FILE),
-        env_file_encoding="utf-8",
-        extra="ignore",
-    )
+    model_config = SettingsConfigDict(env_file=str(ENV_FILE),
+                                    env_file_encoding="utf-8",
+                                    extra="ignore")
 
 
+class SMSSettings(BaseSettings):
+    SMS_API_KEY: str
+    SMS_URL: str
+    PHONE: str
+
+    model_config = SettingsConfigDict(env_file=str(ENV_FILE),
+                                env_file_encoding="utf-8",
+                                extra="ignore")
+
+
+sms_settings = SMSSettings()
 settings = Settings()
 
-print(settings.model_dump())

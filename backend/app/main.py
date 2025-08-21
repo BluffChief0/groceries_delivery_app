@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from backend.app.core.models import models
-from backend.app.api.v1 import categories, products, orders
+from backend.app.api.v1 import categories, products, orders, auth_verify
 from backend.app.api.v1.auth import (auth_router, register_router, users_router, 
                                      current_active_user, current_active_superuser)
 from backend.app.core.models.db import AsyncSessionLocal, create_async_engine, engine, Base
@@ -58,6 +58,7 @@ app.mount(
 
 # app.include_router(auth.route, prefix='/auth', tags=["auth"])
 app.include_router(register_router, prefix="/auth", tags=["auth"])
+app.include_router(auth_verify.router, prefix="/auth/phone", tags=["phone-verify"])
 app.include_router(auth_router,     prefix="/auth/jwt", tags=["auth"])
 app.include_router(users_router,    prefix="/users",     tags=["users"])
 
