@@ -6,6 +6,9 @@ from backend.app.api.v1 import categories, products, orders
 from backend.app.api.v1.auth_verify import auth_verify_router
 from backend.app.api.v1.auth import (auth_router, register_router, users_router, 
                                      current_active_user, current_active_superuser)
+from backend.app.api.v2.admin.images import images
+from backend.app.api.v2.admin.categories import manage_categories_router
+from backend.app.api.v2.admin.products import manage_products_router
 from backend.app.core.models.db import AsyncSessionLocal, create_async_engine, engine, Base
 from sqlalchemy import select, func
 
@@ -61,12 +64,21 @@ app.mount(
     StaticFiles(directory="backend/app/templates/images/products"),
     name="products_images"
 )
+app.mount(
+    "/admin",
+    StaticFiles(directory="backend/app/templates/manage", html=True),
+    name="admin"
+)
 
 # app.include_router(auth.route, prefix='/auth', tags=["auth"])
 app.include_router(register_router, prefix="/auth", tags=["auth"])
 app.include_router(auth_verify_router, prefix="/auth/phone", tags=["phone-verify"])
 app.include_router(auth_router,     prefix="/auth/jwt", tags=["auth"])
 app.include_router(users_router,    prefix="/users",     tags=["users"])
+
+app.include_router(manage_categories_router,   prefix="/manage", tags=["manage categories"])
+app.include_router(images,   prefix="/files", tags=["files"])
+app.include_router(manage_products_router,   prefix="/manage", tags=["manage products"])
 
 
 app.include_router(categories.route, prefix='/categories', tags=["categories"])

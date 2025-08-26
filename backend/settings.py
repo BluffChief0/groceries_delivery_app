@@ -28,6 +28,25 @@ class SMSSettings(BaseSettings):
                                 extra="ignore")
 
 
-sms_settings = SMSSettings()
-settings = Settings()
+class YMSettings(BaseSettings):
+    YM_CLIENT_ID: str
+    YM_TOKEN: str
 
+    model_config = SettingsConfigDict(env_file=str(ENV_FILE),
+                                env_file_encoding="utf-8",
+                                extra="ignore")
+    
+
+class YKSettings(BaseSettings):
+    YK_SHOP_ID: str
+    YK_SECRET_ID: str
+    AUTHORIZATION_HEADER: str
+
+    model_config = SettingsConfigDict(env_file=str(ENV_FILE),
+                                env_file_encoding="utf-8",
+                                extra="ignore")
+
+settings = Settings()
+sms_settings = SMSSettings()
+ym_settings = YMSettings()
+yk_settings = YKSettings()
