@@ -42,30 +42,36 @@ class Product(BaseModel):
         orm_mode = True
 
 
-class OrderItemCreate(BaseModel):
-    product_id: str
-    amount: int
-    price: float
+# class OrderItemCreate(BaseModel):
+#     product_id: str
+#     amount: int
+#     price: float
 
 
-class OrderCreate(BaseModel):
-    user_phone: str
-    delivery_address: str
-    delivery_time: datetime
-    items: List[OrderItemCreate]
+# class OrderCreate(BaseModel):
+#     user_phone: str
+#     delivery_address: str
+#     delivery_time: datetime
+#     items: List[OrderItemCreate]
 
 
-class Order(BaseModel):
-    id: str
-    user_phone: str
-    delivery_address: str
-    delivery_time: datetime
-    total_price: float
-    status: OrderStatus
-    created_at: datetime
-    updated_at: Optional[datetime]
+# class Order(BaseModel):
+#     id: str
+#     user_phone: str
+
+#     delivery_type: str
+#     delivery_address: str
+#     delivery_time: datetime
+
+#     total_price: float
+#     payment_type: str
+    
+#     status: OrderStatus
+#     created_at: datetime
+#     updated_at: Optional[datetime]
+#     comment: Optional[str] = None
 
 
-    class Config:
-        orm_mode = True
+#     class Config:
+#         orm_mode = True
 
