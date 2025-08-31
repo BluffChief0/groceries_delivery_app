@@ -14,7 +14,7 @@
     /* header */
     .topbar{
       display:flex; align-items:center; gap:16px; padding:16px 24px; border-bottom:1px solid var(--line);
-      position:sticky; top:0; background:var(--bg); z-index:10;
+      position:sticky; top: 0px;; background:var(--bg); z-index:10;
     }
     .topbar h1{margin:0; font-size:28px}
     .tabs{display:flex; gap:12px; margin-left:24px; flex-wrap:wrap}
@@ -51,8 +51,23 @@
 
     section[data-view]{display:none}
     section[data-view].active{display:block}
+    .dropdown{position:relative}
+    .ghost.big{padding:12px 16px; font-weight:600}
+    .dropdown-menu{
+      position:absolute; top:100%; left:0;
+      z-index:20; background:#fff; border:1px solid var(--line);
+      border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.06);
+      padding:6px; display:none; max-height:300px; overflow:auto; min-width:240px
+    }
+    .dropdown-menu.open{display:block}
+    .dropdown-menu button{
+      display:block; width:100%; text-align:left; background:#fff; border:0;
+      padding:8px 10px; border-radius:8px; cursor:pointer
+    }
+    .dropdown-menu button:hover{background:#f5f6ff}
   </style>
 </head>
+
 <body>
   <header class="topbar">
     <h1>Категории</h1>
@@ -61,7 +76,7 @@
       <button class="tab active" data-view="categories">категории</button>
       <button class="tab" data-view="products">продукты</button>
       <button class="tab" data-view="users">пользователи</button>
-      <button class="tab" data-view="employees">сотрудники</button>
+      <button class="tab" data-view="workers">сотрудники</button>
     </nav>
 
     <div class="spacer"></div>
@@ -98,13 +113,72 @@
       <div id="list" class="list"></div>
     </section>
 
-    <!-- ===== Продукты (заглушка) ===== -->
+
     <section data-view="products">
+      <!-- Панель с фильтром + действия -->
       <div class="toolbar">
-        <span class="muted">Раздел «Продукты» — скоро добавим: выбор категории, создание/редактирование товара, загрузка изображений.</span>
+        <div class="dropdown" id="pFilterBox">
+          <button type="button" id="pFilterBtn" class="ghost big">Все категории ▾</button>
+          <div class="dropdown-menu" id="pFilterMenu"></div>
+        </div>
+
+        <button class="primary" id="pToggleCreate" type="button">Добавить товар</button>
+        <button class="ghost" id="pBtnReload" type="button">Обновить список</button>
+        <span id="pMsg" class="muted"></span>
       </div>
-      <div id="productsList" class="list"></div>
+
+      <!-- Спойлер с формой добавления -->
+      <details id="pCreatePanel" class="card" style="margin-top:12px; display:none">
+        <summary style="cursor:pointer; font-weight:700">Форма добавления товара</summary>
+        <div class="row" style="margin-top:10px; gap:12px">
+          <input id="pName" placeholder="Название (например, Огурцы 1кг)" style="flex:1" />
+          <select id="pCategory" style="min-width:220px"></select>
+        </div>
+
+        <div class="row" style="margin-top:10px; gap:12px">
+          <input id="pFile" type="file" accept="image/*" />
+          <img id="pPreview" class="preview" alt="" style="display:none" />
+          <button class="ghost" id="pBtnUpload" type="button">Загрузить картинку</button>
+        </div>
+
+        <div class="row" style="margin-top:10px; gap:12px">
+          <input id="pPrice" type="number" step="0.01" placeholder="Цена, ₽" style="width:160px" />
+          <input id="pDiscountPrice" type="number" step="0.01" placeholder="Цена со скидкой, ₽" style="width:200px" />
+          <input id="pWeight" type="number" step="0.01" placeholder="Вес, кг" style="width:140px" />
+          <input id="pCalories" type="number" step="1" placeholder="Калории, ккал" style="width:160px" />
+        </div>
+
+        <div class="row" style="margin-top:10px; gap:12px">
+          <input id="pCountry" placeholder="Страна" style="width:220px" />
+          <input id="pPackage" placeholder="Упаковка (например, банка, 0.4кг)" style="flex:1" />
+        </div>
+
+        <div style="margin-top:10px">
+          <textarea id="pDesc" placeholder="Описание" rows="3" style="width:100%; border:1px solid var(--line); border-radius:10px; padding:10px"></textarea>
+        </div>
+
+        <!-- Состав -->
+        <div style="margin-top:10px">
+          <textarea id="pComposition" placeholder="Состав (текст)" rows="2" style="width:100%; border:1px solid var(--line); border-radius:10px; padding:10px"></textarea>
+        </div>
+
+        <!--- Пишевая ценность-->>
+        <div class="row" style="margin-top:10px; gap:12px; align-items:center">
+          <label class="muted" style="min-width:140px">Пищевая ценность:</label>
+          <input id="pProt" type="number" step="0.01" placeholder="Белки, г/100г" style="width:170px" />
+          <input id="pFat"  type="number" step="0.01" placeholder="Жиры, г/100г"  style="width:170px" />
+          <input id="pCarb" type="number" step="0.01" placeholder="Углеводы, г/100г" style="width:190px" />
+        </div>
+
+        <div class="row" style="margin-top:12px; gap:10px">
+          <button class="primary" id="pBtnCreate" type="button">Сохранить товар</button>
+          <button class="ghost" id="pBtnCancel" type="button">Отмена</button>
+        </div>
+      </details>
+
+      <div id="productsList" class="list" style="margin-top:16px"></div>
     </section>
+
 
     <!-- ===== Пользователи (заглушка) ===== -->
     <section data-view="users">
@@ -115,11 +189,11 @@
     </section>
 
     <!-- ===== Сотрудники (заглушка) ===== -->
-    <section data-view="employees">
+    <section data-view="workers">
       <div class="toolbar">
         <span class="muted">Раздел «Сотрудники» — роли, доступы, приглашения.</span>
       </div>
-      <div id="employeesList" class="list"></div>
+      <div id="workersList" class="list"></div>
     </section>
 
   </main>

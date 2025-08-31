@@ -66,7 +66,7 @@ app.mount(
 )
 app.mount(
     "/admin",
-    StaticFiles(directory="backend/app/templates/manage", html=True),
+    StaticFiles(directory="backend/app/templates/manage/admin", html=True),
     name="admin"
 )
 

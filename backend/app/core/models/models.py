@@ -58,6 +58,11 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     # если у тебя есть таблица Order с FK на users.id:
     orders: Mapped[list["Order"]] = relationship(back_populates="user")
 
+class Role(str, Enum):
+    admin="admin"; manager="manager"; employee="employee"; viewer="viewer"
+
+role = Column(Enum(Role), nullable=False, default=Role.manager)
+
 
 class OAuthAccount(SQLAlchemyBaseUserTableUUID, Base):
     __tablename__ = "oauth_accounts"
