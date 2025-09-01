@@ -45,8 +45,21 @@ class YKSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=str(ENV_FILE),
                                 env_file_encoding="utf-8",
                                 extra="ignore")
+    
+
+class BotSettings(BaseSettings):
+    BOT_TOKEN: str
+    CHAT_ID: str
+    model_config = SettingsConfigDict(env_file=str(ENV_FILE),
+                                    env_file_encoding="utf-8",
+                                    extra="ignore")
+
 
 settings = Settings()
+
 sms_settings = SMSSettings()
+
 ym_settings = YMSettings()
 yk_settings = YKSettings()
+
+bot_settings = BotSettings()

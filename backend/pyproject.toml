@@ -21,7 +21,9 @@ dependencies = [
     "fastapi-users-db-sqlalchemy (>=7.0.0,<8.0.0)",
     "aiosmtplib (>=4.0.1,<5.0.0)",
     "requests (>=2.32.5,<3.0.0)",
-    "yookassa (>=3.6.0,<4.0.0)"
+    "yookassa (>=3.6.0,<4.0.0)",
+    "aiogram (>=3.22.0,<4.0.0)",
+    "tzdata (>=2025.2,<2026.0)"
 ]
 
 

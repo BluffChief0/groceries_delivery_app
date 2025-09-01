@@ -6,8 +6,10 @@ from sqlalchemy import Column, String, Integer, Float, Text, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
-
+from typing import Annotated
 from backend.app.core.models.db import Base
+
+
 
 
 class OrderStatus(str, Enum):
@@ -58,8 +60,13 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     # если у тебя есть таблица Order с FK на users.id:
     orders: Mapped[list["Order"]] = relationship(back_populates="user")
 
-class Role(str, Enum):
-    admin="admin"; manager="manager"; employee="employee"; viewer="viewer"
+class Role(str, PyEnum):
+    user     = "user"
+    admin    = "admin"
+    manager  = "manager"
+    employee = "employee"
+    viewer   = "viewer"
+
 
 role = Column(Enum(Role), nullable=False, default=Role.manager)
 

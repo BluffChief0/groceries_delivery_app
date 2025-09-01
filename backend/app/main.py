@@ -9,7 +9,7 @@ from backend.app.api.v1.auth import (auth_router, register_router, users_router,
 from backend.app.api.v2.admin.images import images
 from backend.app.api.v2.admin.categories import manage_categories_router
 from backend.app.api.v2.admin.products import manage_products_router
-from backend.app.core.models.db import AsyncSessionLocal, create_async_engine, engine, Base
+from backend.app.core.models.db import AsyncSessionLocal
 from sqlalchemy import select, func
 
 import logging
