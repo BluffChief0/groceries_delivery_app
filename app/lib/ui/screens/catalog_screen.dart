@@ -1,7 +1,8 @@
+import 'package:cubit_form/cubit_form.dart';
 import 'package:flutter/material.dart';
-import 'package:grocery_delivery/logic/api/api.dart';
-import 'package:grocery_delivery/logic/models/category.dart';
+import 'package:grocery_delivery/logic/bloc/categories/categories_cubit.dart';
 import 'package:grocery_delivery/ui/components/category_card.dart';
+import 'package:grocery_delivery/ui/components/search.dart';
 
 class CatalogScreen extends StatelessWidget {
   @override
@@ -10,27 +11,23 @@ class CatalogScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Каталог')),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Поиск продуктов',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-              ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Search(
+              hintText: 'Поиск категорий',
+              onChanged: BlocProvider.of<CategoriesCubit>(context).searchCategories,
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<Category>>(
-              future: MockApiService().fetchCategories(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+            child: BlocBuilder<CategoriesCubit, CategoriesState>(
+              builder: (context, state) {
+                if (state is! CategoriesLoaded) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return ListView.builder(
-                  itemCount: snapshot.data!.length,
+                  itemCount: state.categories.length,
                   itemBuilder: (context, index) {
-                    final category = snapshot.data![index];
+                    final category = state.categories[index];
 
                     return CategoryCard(category: category);
                   },

@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:grocery_delivery/logic/api/api.dart';
 import 'package:grocery_delivery/logic/bloc/cart_cubit.dart';
-import 'package:grocery_delivery/logic/bloc/catalog_cubit.dart';
+import 'package:grocery_delivery/logic/bloc/categories/categories_cubit.dart';
+import 'package:grocery_delivery/logic/bloc/products/products_cubit.dart';
 import 'package:grocery_delivery/logic/models/user.dart';
+import 'package:grocery_delivery/logic/navigation/router.dart';
 import 'package:grocery_delivery/ui/screens/cart_screen.dart';
 import 'package:grocery_delivery/ui/screens/catalog_screen.dart';
-import 'package:grocery_delivery/ui/screens/category_screen.dart';
-import 'package:grocery_delivery/ui/screens/checkout_screen.dart';
 import 'package:grocery_delivery/ui/screens/profile_screen.dart';
+import 'package:grocery_delivery/ui/theme/brand_colors.dart';
 
-// Cubit для профиля
 class ProfileCubit extends Cubit<User?> {
   ProfileCubit(this.apiService) : super(null);
-  final MockApiService apiService;
+  final ApiService apiService;
 
   Future<void> authenticate(String emailOrPhone) async {
-    final user = await apiService.authenticate(emailOrPhone);
+    final user = await ApiService.authenticate(emailOrPhone);
     emit(user);
   }
 
@@ -30,24 +31,53 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final MockApiService apiService = MockApiService();
+  final ApiService apiService = ApiService();
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => CartCubit()),
-        BlocProvider(create: (context) => ProfileCubit(apiService)),
-        BlocProvider(create: (context) => CatalogCubit(apiService)),
-      ],
-      child: MaterialApp(
-        title: 'Доставка продуктов',
-        theme: ThemeData(primarySwatch: Colors.blue),
-        home: MainScreen(),
-        routes: {
-          '/category': (context) => CategoryScreen(),
-          '/checkout': (context) => CheckoutScreen(),
-        },
+    return GestureDetector(
+      onTap: () {
+        final FocusScopeNode f = FocusScope.of(context);
+        if (!f.hasPrimaryFocus && f.focusedChild != null) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+      },
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => CartCubit()),
+          BlocProvider(create: (context) => ProfileCubit(apiService)),
+          BlocProvider(create: (context) => ProductsCubit()),
+          BlocProvider(create: (context) => CategoriesCubit()..getAllCategories()),
+        ],
+        child: MaterialApp(
+          title: 'Доставка продуктов',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: BrandColors.white,
+              surfaceTintColor: BrandColors.white,
+              elevation: 0.1,
+              shadowColor: BrandColors.totalBlack,
+            ),
+            scaffoldBackgroundColor: BrandColors.white,
+            bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+              backgroundColor: BrandColors.white,
+            ),
+            textSelectionTheme: const TextSelectionThemeData(
+              cursorColor: BrandColors.black,
+            ),
+          ),
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('ru'),
+          ],
+          onGenerateRoute: AppRouter.generateRoute,
+          initialRoute: '/',
+        ),
       ),
     );
   }
@@ -58,8 +88,9 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateMixin {
+  late final TabController tabController = TabController(length: 3, vsync: this)
+    ..addListener(() => setState(() {}));
 
   static final List<Widget> _screens = [
     CatalogScreen(),
@@ -67,17 +98,16 @@ class _MainScreenState extends State<MainScreen> {
     ProfileScreen(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: TabBarView(
+        controller: tabController,
+        children: _screens,
+      ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: BrandColors.accent,
+        unselectedItemColor: BrandColors.textSecondary,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Каталог'),
           BottomNavigationBarItem(
@@ -86,8 +116,10 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Профиль'),
         ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        currentIndex: tabController.index,
+        onTap: (value) {
+          tabController.animateTo(value);
+        },
       ),
     );
   }

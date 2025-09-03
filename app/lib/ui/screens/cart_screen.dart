@@ -2,7 +2,9 @@ import 'package:cubit_form/cubit_form.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_delivery/logic/bloc/cart_cubit.dart';
 import 'package:grocery_delivery/logic/models/product.dart';
+import 'package:grocery_delivery/ui/components/brand_button.dart';
 import 'package:grocery_delivery/ui/components/product_card_cart.dart';
+import 'package:grocery_delivery/ui/theme/brand_colors.dart';
 
 class CartScreen extends StatelessWidget {
   @override
@@ -18,6 +20,7 @@ class CartScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.builder(
+                  padding: const EdgeInsets.only(top: 16),
                   itemCount: cartItems.length,
                   itemBuilder: (context, index) {
                     final product = cartItems.entries.toList()[index].key;
@@ -27,9 +30,11 @@ class CartScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/checkout'),
-                  child: const Text('Оформить заказ'),
+                child: BrandButton(
+                  onTap: () => Navigator.pushNamed(context, '/checkout'),
+                  height: 45,
+                  label: 'Оформить заказ на ${BlocProvider.of<CartCubit>(context).totalPrice} ₽',
+                  labelColor: BrandColors.white,
                 ),
               ),
             ],

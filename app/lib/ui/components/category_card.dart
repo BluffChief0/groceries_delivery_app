@@ -30,6 +30,7 @@ class CategoryCard extends StatelessWidget {
               src: category.imageUrl,
               width: 30,
               height: 30,
+              borderRadius: BorderRadius.circular(12),
             ),
             const SizedBox(width: 16),
             Text(

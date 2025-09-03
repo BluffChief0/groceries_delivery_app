@@ -6,10 +6,12 @@ class BrandIconButton extends StatelessWidget {
     required this.onTap,
     required this.iconData,
     this.color = BrandColors.accent,
+    this.iconColor = BrandColors.white,
   });
   final VoidCallback onTap;
   final Color color;
   final IconData iconData;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class BrandIconButton extends StatelessWidget {
         child: Center(
           child: Icon(
             iconData,
-            color: BrandColors.white,
+            color: iconColor,
           ),
         ),
       ),

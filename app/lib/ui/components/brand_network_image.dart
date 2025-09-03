@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_delivery/logic/api/api_client.dart';
 import 'package:grocery_delivery/ui/components/brand_skeleton.dart';
 import 'package:grocery_delivery/ui/theme/brand_colors.dart';
 
@@ -127,7 +128,7 @@ class BrandNetworkImage extends StatelessWidget {
           width: width,
           height: height,
           child: CachedNetworkImage(
-            imageUrl: src!,
+            imageUrl: baseUrl + src!,
             color: color,
             imageBuilder: (context, imageProvider) {
               if (cacheWidth != null || cacheHeight != null) {
@@ -135,12 +136,10 @@ class BrandNetworkImage extends StatelessWidget {
                   imageProvider,
                   width: cacheWidth == null
                       ? null
-                      : cacheWidth! *
-                          MediaQuery.devicePixelRatioOf(context).round(),
+                      : cacheWidth! * MediaQuery.devicePixelRatioOf(context).round(),
                   height: cacheHeight == null
                       ? null
-                      : cacheHeight! *
-                          MediaQuery.devicePixelRatioOf(context).round(),
+                      : cacheHeight! * MediaQuery.devicePixelRatioOf(context).round(),
                 );
               }
 
@@ -193,7 +192,7 @@ class BrandNetworkImage extends StatelessWidget {
       return ClipRRect(
         borderRadius: borderRadius ?? BorderRadius.zero,
         child: CachedNetworkImage(
-          imageUrl: src!,
+          imageUrl: baseUrl + src!,
           color: color,
           width: width,
           height: height,

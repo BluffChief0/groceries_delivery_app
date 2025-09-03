@@ -60,7 +60,7 @@ class BrandColors {
   static const divider = Color(0xFFC7C7CC);
 
   //Main
-  static const Color accent = Color(0xFF75BB5B);
+  static const Color accent = Color(0xFF45B26B);
   static const Color accentMedium = Color(0xFFBFE7B0);
   static const Color accentLight = Color(0xFFEAF5E6);
   static const Color error = Color(0xFFFF3B30); //
