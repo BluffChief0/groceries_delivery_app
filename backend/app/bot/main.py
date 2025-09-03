@@ -12,7 +12,6 @@ from sqlalchemy.orm import selectinload  # <-- добавили
 
 # === твои импорты ===
 from backend.settings import bot_settings
-from backend.app.bot.handlers.handlers import router  # если есть свои хендлеры — оставляем
 from backend.app.core.models.db import AsyncSessionLocal  # ВАЖНО: именно factory!
 from backend.app.core.models.models import Order, OrderItem  # <-- добавили OrderItem
 
@@ -32,7 +31,6 @@ bot = Bot(
     default=DefaultBotProperties(parse_mode="HTML")  # можно добавить: disable_web_page_preview=True
 )
 dp = Dispatcher()
-dp.include_router(router)  # если роутер не нужен — можно убрать
 
 # ====== форматирование уведомления ======
 

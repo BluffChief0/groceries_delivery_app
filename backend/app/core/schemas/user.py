@@ -18,6 +18,7 @@ class UserCreate(schemas.BaseUserCreate):
     password: str
     phone_number: Optional[str] = Field(None, example="+79991234567")
     name: Optional[str] = Field(None, example="Иван Иванов")
+    role: Optional[str] = Field(None, example="user")
 
     @field_validator("phone_number")
     @classmethod

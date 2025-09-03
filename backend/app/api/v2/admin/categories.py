@@ -5,13 +5,13 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from backend.app.api.v1.auth import admin_only
 from backend.app.core.models.db import get_async_session
 from backend.app.core.models.models import Category
 from backend.app.core.schemas.manage import CategoryCreate, CategoryOut
 
 CATEGORIES_FS_DIR = Path("backend/app/templates/images/categories").resolve()
-manage_categories_router = APIRouter()
+manage_categories_router = APIRouter(dependencies=[Depends(admin_only)])
 
 
 @manage_categories_router.get("/categories", response_model=list[CategoryOut])
