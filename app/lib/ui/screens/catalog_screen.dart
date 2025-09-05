@@ -25,9 +25,12 @@ class CatalogScreen extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return ListView.builder(
-                  itemCount: state.categories.length,
+                  itemCount: state.categories.length + 1,
                   itemBuilder: (context, index) {
-                    final category = state.categories[index];
+                    if (index == 0) {
+                      return const FavouritesCategoryCard();
+                    }
+                    final category = state.categories[index - 1];
 
                     return CategoryCard(category: category);
                   },

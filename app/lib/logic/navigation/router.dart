@@ -53,6 +53,10 @@ class AppRouter {
             category: settings.arguments as Category,
           ),
         );
+      case '/favourites':
+        return route(
+          const FavouritesCategoryScreen(),
+        );
       case '/checkout':
         return route(CheckoutScreen());
       case '/product':

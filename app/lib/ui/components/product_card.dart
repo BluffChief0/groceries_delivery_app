@@ -1,7 +1,9 @@
+import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:cubit_form/cubit_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_delivery/logic/bloc/cart_cubit.dart';
+import 'package:grocery_delivery/logic/bloc/favourites_cubit.dart';
 import 'package:grocery_delivery/logic/models/product.dart';
 import 'package:grocery_delivery/ui/components/brand_network_image.dart';
 import 'package:grocery_delivery/ui/theme/brand_colors.dart';
@@ -52,6 +54,20 @@ class ProductCard extends StatelessWidget {
                           color: BrandColors.black70,
                         ),
                       ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: BrandColors.fillTertiary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: LikeButton(product: product),
+                      ).blurry(
+                        blur: 20,
+                        padding: const EdgeInsets.all(4),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -144,6 +160,69 @@ class ProductCard extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class LikeButton extends StatefulWidget {
+  const LikeButton({required this.product});
+  final Product product;
+
+  @override
+  State<LikeButton> createState() => _LikeButtonState();
+}
+
+class _LikeButtonState extends State<LikeButton> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 200),
+    vsync: this,
+    value: 1,
+  );
+
+  late bool _isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = BlocProvider.of<FavouritesCubit>(context).state.contains(widget.product.id);
+  }
+
+  @override
+  void didUpdateWidget(covariant LikeButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.product != widget.product) {
+      _isFavorite = BlocProvider.of<FavouritesCubit>(context).state.contains(widget.product.id);
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isFavorite = !_isFavorite;
+        });
+        BlocProvider.of<FavouritesCubit>(context).addToFavourites(widget.product);
+        _controller.reverse().then((value) => _controller.forward());
+      },
+      child: ScaleTransition(
+        scale: Tween<double>(
+          begin: 0.7,
+          end: 1,
+        ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut)),
+        child: Icon(
+          Icons.favorite,
+          size: 20,
+          color: _isFavorite ? BrandColors.totalBlack : BrandColors.textTertiary,
+        ),
+      ),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'product.g.dart';
 
-@JsonSerializable(createToJson: false, fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake)
 class Product extends Equatable {
   const Product({
     required this.id,
@@ -31,12 +31,10 @@ class Product extends Equatable {
   final double? discountPrice;
   final String imageUrl;
   final double stock;
-  final double rating;
+  final double? rating;
   final double calories;
   final double weight;
   final String country;
-
-
 
   static List<Product> parseListFromJson(dynamic json) {
     if (json is! List) {
@@ -45,6 +43,12 @@ class Product extends Equatable {
 
     return json.map(Product.fromJson).toList().cast<Product>();
   }
+
+  static List<Map<String, dynamic>> parseListToJson(List<Product> products) {
+    return products.map((product) => product.toJson()).toList();
+  }
+
+  Map<String, dynamic> toJson() => _$ProductToJson(this);
 
   @override
   List<Object?> get props => [id];

@@ -1,12 +1,17 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:grocery_delivery/logic/api/api.dart';
 import 'package:grocery_delivery/logic/bloc/cart_cubit.dart';
 import 'package:grocery_delivery/logic/bloc/categories/categories_cubit.dart';
+import 'package:grocery_delivery/logic/bloc/favourites_cubit.dart';
 import 'package:grocery_delivery/logic/bloc/products/products_cubit.dart';
 import 'package:grocery_delivery/logic/models/user.dart';
 import 'package:grocery_delivery/logic/navigation/router.dart';
+import 'package:grocery_delivery/logic/services/storage_service.dart';
 import 'package:grocery_delivery/ui/screens/cart_screen.dart';
 import 'package:grocery_delivery/ui/screens/catalog_screen.dart';
 import 'package:grocery_delivery/ui/screens/profile_screen.dart';
@@ -26,8 +31,15 @@ class ProfileCubit extends Cubit<User?> {
   }
 }
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await StorageService.init();
+      runApp(MyApp());
+    },
+    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -46,8 +58,12 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(create: (context) => CartCubit()),
           BlocProvider(create: (context) => ProfileCubit(apiService)),
-          BlocProvider(create: (context) => ProductsCubit()),
+          BlocProvider(
+            create: (context) => ProductsCubit()..getAllProducts(),
+            lazy: false,
+          ),
           BlocProvider(create: (context) => CategoriesCubit()..getAllCategories()),
+          BlocProvider(create: (context) => FavouritesCubit()..initFavourites()),
         ],
         child: MaterialApp(
           title: 'Доставка продуктов',
